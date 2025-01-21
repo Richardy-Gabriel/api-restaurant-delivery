@@ -43,3 +43,20 @@ def product_detail(request, pk):
     
     serializer = serializers.ProductSerializer(product)
     return Response(serializer.data)
+
+
+@api_view(['GET','POST'])
+def client_list_create(request):
+    """
+    List and Create Clients
+    """
+    if request.method == 'POST':
+        serializer = serializers.ClientSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    clients = models.ClientModel.objects.all()
+    serializer = serializers.ClientSerializer(clients, many=True)
+    return Response(serializer.data)
